@@ -3,13 +3,30 @@ var ReactFire = require('reactfire');
 var Firebase = require('firebase');
 var rootUrl = 'https://react-firebase1.firebaseio.com/';
 var Header = require('./Header');
+var List = require('./List');
 
 var App = React.createClass({
   mixins: [ReactFire],
 
+  getInitialState: function(){
+    return {
+        items: {},
+        loaded: false
+    };
+  },
+
+  handleDataLoaded: function () {
+    this.setState({
+        loaded: true
+    });
+  },
+
   componentWillMount: function(){
+    var fb = new Firebase(rootUrl + 'items/');
     //ova bindAsObject metoda je iz ReactFire API-ja...
-    this.bindAsObject(new Firebase(rootUrl + 'items/'), 'items');
+    this.bindAsObject(fb, 'items');
+    //ovim saljemo podatke na this.state.items...
+    fb.on('value', this.handleDataLoaded);
   },
 
   render: function() {
@@ -20,6 +37,10 @@ var App = React.createClass({
                     TO-DO LIST
                 </h2>
                 <Header  itemsStore={this.firebaseRefs.items} />
+                <hr />
+                <div className={ "content " +  (this.state.loaded ? 'loaded':'')}>
+                  <List items={this.state.items} />
+                </div>
             </div>
           </div>
     );
