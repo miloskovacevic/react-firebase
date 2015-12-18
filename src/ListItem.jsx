@@ -12,6 +12,7 @@ var ListItem = React.createClass({
     },
 
     componentWillMount: function () {
+    //ovim smo vezali ovaj todo item...
       this.fb = new Firebase(rootUrl + 'items/' + this.props.item.key );
     },
 
@@ -21,6 +22,9 @@ var ListItem = React.createClass({
         this.setState(update);
         //apdejt Firebase-a...
         this.fb.update(update);
+    },
+    handleDeleteClick: function () {
+      this.fb.remove();
     },
 
     render: function () {
@@ -34,7 +38,7 @@ var ListItem = React.createClass({
                     value={this.state.text}
                     />
                 <span className="input-group-btn">
-                    <button className="btn btn-default">Delete</button>
+                    <button onClick={this.handleDeleteClick} className="btn btn-default">Delete</button>
                 </span>
             </div>
 
