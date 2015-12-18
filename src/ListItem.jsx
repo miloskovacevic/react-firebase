@@ -7,7 +7,8 @@ var ListItem = React.createClass({
     getInitialState: function(){
         return {
             text: this.props.item.text,
-            done: this.props.item.done
+            done: this.props.item.done,
+            textChanged: false
         };
     },
 
@@ -26,6 +27,29 @@ var ListItem = React.createClass({
     handleDeleteClick: function () {
       this.fb.remove();
     },
+    handleTextChange: function(e){
+        this.setState({
+            text: e.target.value,
+            textChanged: true
+        });
+    },
+
+    changesButtons: function () {
+      if(!this.state.textChanged){
+          return null;
+      }
+      else {
+        return <span>
+                    <button onClick={this.handleSave} className="btn btn-default">Save</button>
+                    <button className="btn btn-default">Undo</button>
+               </span>
+      }
+    },
+
+    handleSave: function () {
+        var update = {text: this.state.text};
+        this.fb.update(update);
+    },
 
     render: function () {
         return (
@@ -36,8 +60,10 @@ var ListItem = React.createClass({
                 <input type="text"
                     className="form-control"
                     value={this.state.text}
+                    onChange={this.handleTextChange}
                     />
                 <span className="input-group-btn">
+                    {this.changesButtons()}
                     <button onClick={this.handleDeleteClick} className="btn btn-default">Delete</button>
                 </span>
             </div>
