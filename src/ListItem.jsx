@@ -39,25 +39,37 @@ var ListItem = React.createClass({
           return null;
       }
       else {
-        return <span>
-                    <button onClick={this.handleSave} className="btn btn-default">Save</button>
-                    <button className="btn btn-default">Undo</button>
-               </span>
+        return [
+                    <button onClick={this.handleSave} className="btn btn-default">Save</button>,
+                    <button onClick={this.handleUndo} className="btn btn-default">Undo</button>
+               ];
       }
     },
 
     handleSave: function () {
         var update = {text: this.state.text};
         this.fb.update(update);
+
+        this.setState({
+            textChanged: false
+        });
+    },
+
+    handleUndo: function () {
+        this.setState({
+            text: this.props.item.text,
+            textChanged: false
+        });
     },
 
     render: function () {
         return (
             <div className="input-group">
                 <span className = "input-group-addon">
-                    <input type="checkbox" onChange={this.handleDoneChange} checked={this.state.done} />
+                    <input type="checkbox"  onChange={this.handleDoneChange} checked={this.state.done} />
                 </span>
                 <input type="text"
+                    disabled={this.state.done}
                     className="form-control"
                     value={this.state.text}
                     onChange={this.handleTextChange}

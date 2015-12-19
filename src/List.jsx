@@ -2,7 +2,7 @@ var React = require('react');
 var ListItem = require('./ListItem');
 var List = React.createClass({
     renderList: function () {
-        if(this.props.items && Object.keys(this.props.items).length === 0){
+        if(!this.props.items){
             return <h4>Add a TO to get started</h4>;
         }else{
 

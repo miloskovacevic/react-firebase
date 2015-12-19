@@ -22,11 +22,30 @@ var App = React.createClass({
   },
 
   componentWillMount: function(){
-    var fb = new Firebase(rootUrl + 'items/');
+    this.fb = new Firebase(rootUrl + 'items/');
     //ova bindAsObject metoda je iz ReactFire API-ja...
-    this.bindAsObject(fb, 'items');
+    this.bindAsObject(this.fb, 'items');
     //ovim saljemo podatke na this.state.items...
-    fb.on('value', this.handleDataLoaded);
+    this.fb.on('value', this.handleDataLoaded);
+  },
+
+  deleteButtonHtml: function () {
+    if(!this.state.loaded){
+        return null;
+    } else {
+        return <div className="text-center clear-complete">
+                  <hr/>
+                  <button className="btn btn-deafult" type="button" onClick={this.deleteAllChecked}>Clear Complete</button>
+               </div>
+    }
+  },
+
+  deleteAllChecked: function () {
+    for(var key in this.state.items) {
+        if(this.state.items[key].done === true){
+            this.fb.child(key).remove();
+        }
+    }
   },
 
   render: function() {
@@ -40,6 +59,7 @@ var App = React.createClass({
                 <hr />
                 <div className={ "content " +  (this.state.loaded ? 'loaded':'')}>
                   <List items={this.state.items} />
+                 {this.deleteButtonHtml()}
                 </div>
             </div>
           </div>
